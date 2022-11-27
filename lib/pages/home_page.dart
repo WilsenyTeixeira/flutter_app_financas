@@ -14,6 +14,7 @@ class _HomePageState extends State<HomePage> {
   // reference the hive box
   final _myBox = Hive.box('mybox');
   ToDoDataBase db = ToDoDataBase();
+  List dbFinal = [];
 
   @override
   void initState() {
@@ -24,8 +25,18 @@ class _HomePageState extends State<HomePage> {
       // there already exists data
       db.loadData();
     }
+    atualizaDbFinal();
 
     super.initState();
+  }
+
+  void atualizaDbFinal() {
+    dbFinal.clear();
+    for (var element in db.toDoList) {
+      if (element[3] == false) {
+        dbFinal.add(element);
+      }
+    }
   }
 
   // text controller
@@ -33,9 +44,10 @@ class _HomePageState extends State<HomePage> {
   // checkbox was tapped
   void payTask(int index) {
     setState(() {
-      db.toDoList[index][3] = !db.toDoList[index][3];
+      db.toDoList[index][3] = true;
     });
     db.updateDataBase();
+    atualizaDbFinal();
   }
 
   // delete task
@@ -44,26 +56,26 @@ class _HomePageState extends State<HomePage> {
       db.toDoList.removeAt(index);
     });
     db.updateDataBase();
+    atualizaDbFinal();
   }
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
         elevation: 0,
       ),
       body: ListView.builder(
-        itemCount: db.toDoList.length,
+        itemCount: dbFinal.length,
         itemBuilder: (context, index) {
           return ToDoTile(
-            taskValor: db.toDoList[index][0],
-            taskDesc: db.toDoList[index][1],
-            taskDate: db.toDoList[index][2],
-            taskCompleted: db.toDoList[index][3],
-            taskCategoria: db.toDoList[index][4],
-            taskMetodo: db.toDoList[index][5],
+            taskValor: dbFinal[index][0],
+            taskDesc: dbFinal[index][1],
+            taskDate: dbFinal[index][2],
+            taskCompleted: dbFinal[index][3],
+            taskCategoria: dbFinal[index][4],
+            taskMetodo: dbFinal[index][5],
             payTask: (context) => payTask(index),
             deleteFunction: (context) => deleteTask(index),
           );

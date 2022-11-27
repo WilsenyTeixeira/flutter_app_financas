@@ -8,7 +8,7 @@ void main() async {
   await Hive.initFlutter();
 
   // open a box
-  var box = await Hive.openBox('mybox');
+  //var box = await Hive.openBox('mybox');
 
   runApp(const MyApp());
 }
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             colorSchemeSeed: const Color.fromARGB(255, 0, 110, 27),
             useMaterial3: true),
-        home: NavigationExample());
+        home: const NavigationExample());
   }
 }
 
@@ -63,13 +63,13 @@ class _NavigationExampleState extends State<NavigationExample> {
         ],
       ),
       body: <Widget>[
-        HomePage(),
+        const HomePage(),
         Container(
           color: Colors.green,
           alignment: Alignment.center,
           child: const Text('Page 2'),
         ),
-        AddDespesas(),
+        const AddDespesas(),
       ][currentPageIndex],
       /*floatingActionButton: FloatingActionButton(
         onPressed: () {

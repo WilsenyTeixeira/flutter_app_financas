@@ -1,8 +1,5 @@
 import 'package:app_financa/main.dart';
-import 'package:app_financa/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -15,6 +12,8 @@ class Selected {
 }
 
 class AddDespesas extends StatefulWidget {
+  const AddDespesas({super.key});
+
   @override
   State<AddDespesas> createState() => _AddDespesasState();
 }
@@ -43,7 +42,6 @@ class _AddDespesasState extends State<AddDespesas> {
   ];
 
   DateTime _selectedDate = DateTime.now();
-  String _formattedDate = '';
 
   @override
   void initState() {
@@ -408,7 +406,7 @@ class _AddDespesasState extends State<AddDespesas> {
   _selectDate(BuildContext context) async {
     DateTime? newSelectedDate = await showDatePicker(
         context: context,
-        initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
+        initialDate: _selectedDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2040),
         builder: (BuildContext context, Widget? child) {
