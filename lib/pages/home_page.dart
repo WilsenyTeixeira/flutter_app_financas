@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   // text controller
 
   // checkbox was tapped
-  void checkBoxChanged(bool? value, int index) {
+  void payTask(int index) {
     setState(() {
       db.toDoList[index][3] = !db.toDoList[index][3];
     });
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
             taskCompleted: db.toDoList[index][3],
             taskCategoria: db.toDoList[index][4],
             taskMetodo: db.toDoList[index][5],
-            onChanged: (value) => checkBoxChanged(value, index),
+            payTask: (context) => payTask(index),
             deleteFunction: (context) => deleteTask(index),
           );
         },

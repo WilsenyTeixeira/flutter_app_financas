@@ -10,7 +10,7 @@ class ToDoTile extends StatelessWidget {
   final bool taskCompleted;
   final String taskCategoria;
   final String taskMetodo;
-  Function(bool?)? onChanged;
+  Function(BuildContext)? payTask;
   Function(BuildContext)? deleteFunction;
 
   ToDoTile({
@@ -21,7 +21,7 @@ class ToDoTile extends StatelessWidget {
     required this.taskCompleted,
     required this.taskCategoria,
     required this.taskMetodo,
-    required this.onChanged,
+    required this.payTask,
     required this.deleteFunction,
   });
 
@@ -31,15 +31,26 @@ class ToDoTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 25.0, right: 25, top: 25),
       child: Slidable(
+        startActionPane: ActionPane(
+          motion: StretchMotion(),
+          children: [
+            SlidableAction(
+              onPressed: payTask,
+              icon: Icons.done,
+              backgroundColor: colors.tertiaryContainer,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ],
+        ),
         endActionPane: ActionPane(
           motion: StretchMotion(),
           children: [
             SlidableAction(
               onPressed: deleteFunction,
               icon: Icons.delete,
-              backgroundColor: Colors.red.shade300,
+              backgroundColor: colors.onErrorContainer,
               borderRadius: BorderRadius.circular(12),
-            )
+            ),
           ],
         ),
         child: Container(
@@ -50,16 +61,6 @@ class ToDoTile extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // checkbox
-              SizedBox(
-                width: 30,
-                height: 30,
-                child: Checkbox(
-                  value: taskCompleted,
-                  onChanged: onChanged,
-                  activeColor: Colors.black,
-                ),
-              ),
               Column(
                 children: [
                   Container(
@@ -73,9 +74,6 @@ class ToDoTile extends StatelessWidget {
                           taskDate,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            decoration: taskCompleted
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
                           ),
                         ),
                         Text(
@@ -93,22 +91,25 @@ class ToDoTile extends StatelessWidget {
                   Container(
                     width: 300,
                     height: 50,
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            taskCategoria,
-                            style: TextStyle(
-                              decoration: taskCompleted
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
+                          SizedBox(
+                            width: 40,
+                            child: Icon(Icons.done),
+                          ),
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              taskDesc,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                          if (taskMetodo == "Cartão")
-                            const Icon(Icons.credit_card_rounded)
-                          else
-                            const Icon(Icons.money_rounded)
                         ]),
                   ),
                   Container(
@@ -118,22 +119,30 @@ class ToDoTile extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            taskDesc,
-                            style: TextStyle(
-                              decoration: taskCompleted
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                            ),
+                          Chip(
+                            labelStyle: TextStyle(fontSize: 12),
+                            label: Text('$taskCategoria'),
                           ),
-                          Text(
-                            taskMetodo,
-                            style: TextStyle(
-                              decoration: taskCompleted
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
+                          if (taskMetodo == "Cartão")
+                            const Chip(
+                              labelStyle: TextStyle(fontSize: 12),
+                              label: Text("Cartão"),
+                            )
+                          else
+                            const Chip(
+                              labelStyle: TextStyle(fontSize: 12),
+                              label: Text("Dinheiro"),
                             ),
-                          ),
+                          if (taskCompleted == true)
+                            const Chip(
+                              labelStyle: TextStyle(fontSize: 12),
+                              label: Text("Pago"),
+                            )
+                          else
+                            const Chip(
+                              labelStyle: TextStyle(fontSize: 12),
+                              label: Text("Em Aberto"),
+                            )
                         ]),
                   ),
                 ],

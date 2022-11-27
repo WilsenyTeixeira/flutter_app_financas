@@ -24,7 +24,7 @@ class _AddDespesasState extends State<AddDespesas> {
   ToDoDataBase db = ToDoDataBase();
 
   String categoria = '';
-  String metodo = '';
+  String metodo = 'Dinheiro';
 
   bool selectedMoney = true;
   bool selectedCard = false;
@@ -148,7 +148,7 @@ class _AddDespesasState extends State<AddDespesas> {
                 child: TextField(
                   controller: _controllerValor,
                   keyboardType: TextInputType.number,
-                  cursorColor: Theme.of(context).primaryColor,
+                  cursorColor: colors.onSurfaceVariant,
                   inputFormatters: [
                     CurrencyTextInputFormatter(locale: 'br', symbol: 'BR (\$)')
                   ],
@@ -156,10 +156,11 @@ class _AddDespesasState extends State<AddDespesas> {
                     icon: Icon(Icons.attach_money),
                     labelText: 'Valor da Despesa',
                     labelStyle: TextStyle(
-                      color: Color(0xFF6200EE),
+                      color: Color.fromARGB(255, 66, 73, 64),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF6200EE)),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 66, 73, 64)),
                     ),
                   ),
                 ),
@@ -177,10 +178,11 @@ class _AddDespesasState extends State<AddDespesas> {
                     icon: Icon(Icons.description),
                     labelText: 'Descricao',
                     labelStyle: TextStyle(
-                      color: Color(0xFF6200EE),
+                      color: Color.fromARGB(255, 66, 73, 64),
                     ),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF6200EE)),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 66, 73, 64)),
                     ),
                   ),
                 ),
@@ -197,10 +199,11 @@ class _AddDespesasState extends State<AddDespesas> {
                       icon: Icon(Icons.date_range),
                       labelText: 'Vencimento',
                       labelStyle: TextStyle(
-                        color: Color(0xFF6200EE),
+                        color: Color.fromARGB(255, 66, 73, 64),
                       ),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF6200EE)),
+                        borderSide:
+                            BorderSide(color: Color.fromARGB(255, 66, 73, 64)),
                       ),
                     ),
                     onTap: () {
@@ -215,7 +218,7 @@ class _AddDespesasState extends State<AddDespesas> {
                   const Text("Método de Pagamento:",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple)),
+                          color: Color.fromARGB(255, 66, 73, 64))),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -304,7 +307,7 @@ class _AddDespesasState extends State<AddDespesas> {
                   const Text("Categoria:",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple)),
+                          color: Color.fromARGB(255, 66, 73, 64))),
                   Column(
                     children: [
                       const SizedBox(height: 20),
@@ -410,15 +413,9 @@ class _AddDespesasState extends State<AddDespesas> {
         lastDate: DateTime(2040),
         builder: (BuildContext context, Widget? child) {
           return Theme(
-            data: ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.dark(
-                primary: Colors.deepPurple,
-                onPrimary: Colors.white,
-                surface: Colors.blueGrey,
-                onSurface: Colors.yellow,
-              ),
-              dialogBackgroundColor: Colors.blue[500],
-            ),
+            data: ThemeData(
+                colorSchemeSeed: const Color.fromARGB(255, 0, 110, 27),
+                useMaterial3: true),
             child: child!,
           );
         });
