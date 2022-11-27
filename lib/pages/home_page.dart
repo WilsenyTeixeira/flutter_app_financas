@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   // checkbox was tapped
   void checkBoxChanged(bool? value, int index) {
     setState(() {
-      db.toDoList[index][1] = !db.toDoList[index][1];
+      db.toDoList[index][3] = !db.toDoList[index][3];
     });
     db.updateDataBase();
   }
@@ -48,8 +48,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.deepPurple,
       appBar: AppBar(
         title: const Text('Home'),
         elevation: 0,
@@ -59,9 +59,11 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (context, index) {
           return ToDoTile(
             taskValor: db.toDoList[index][0],
-            taskName: db.toDoList[index][1],
+            taskDesc: db.toDoList[index][1],
             taskDate: db.toDoList[index][2],
             taskCompleted: db.toDoList[index][3],
+            taskCategoria: db.toDoList[index][4],
+            taskMetodo: db.toDoList[index][5],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
           );

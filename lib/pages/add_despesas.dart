@@ -8,6 +8,12 @@ import 'package:intl/intl.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../data/database.dart';
 
+class Selected {
+  String name;
+  bool isSelect;
+  Selected({required this.name, required this.isSelect});
+}
+
 class AddDespesas extends StatefulWidget {
   @override
   State<AddDespesas> createState() => _AddDespesasState();
@@ -17,25 +23,27 @@ class _AddDespesasState extends State<AddDespesas> {
   final _myBox = Hive.box('mybox');
   ToDoDataBase db = ToDoDataBase();
 
+  String categoria = '';
+  String metodo = '';
+
+  bool selectedMoney = true;
+  bool selectedCard = false;
+
+  List<Selected> selecteds = [
+    Selected(name: "selectedAlimentacao", isSelect: false),
+    Selected(name: "selectedLazer", isSelect: false),
+    Selected(name: "selectedTransporte", isSelect: false),
+    Selected(name: "selectedPet", isSelect: false),
+    Selected(name: "selectedFilhos", isSelect: false),
+    Selected(name: "selectedImpostos", isSelect: false),
+    Selected(name: "selectedCasa", isSelect: false),
+    Selected(name: "selectedEducacao", isSelect: false),
+    Selected(name: "selectedSaude", isSelect: false),
+    Selected(name: "selectedOutros", isSelect: false),
+  ];
+
   DateTime _selectedDate = DateTime.now();
   String _formattedDate = '';
-/*
-  void _selectDate() async {
-    final DateTime? newDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2022, 1),
-      lastDate: DateTime(2030, 1),
-      helpText: 'Select a date',
-    );
-    if (newDate != null) {
-      String newFormattedDate = DateFormat('yyyy-MM-dd').format(newDate);
-      setState(() {
-        _date = newDate;
-        _formattedDate = newFormattedDate;
-      });
-    }
-  }*/
 
   @override
   void initState() {
@@ -60,17 +68,51 @@ class _AddDespesasState extends State<AddDespesas> {
         _controllerValor.text,
         _controllerDesc.text,
         _controllerDate.text,
-        false
+        false,
+        categoria,
+        metodo,
       ]);
       _controllerValor.clear();
       _controllerDesc.clear();
       _controllerDate.clear();
+      categoria = '';
+      metodo = '';
     });
     db.updateDataBase();
   }
 
+  void selectMoney() {
+    setState(() {
+      selectedMoney = true;
+      selectedCard = false;
+      metodo = 'Dinheiro';
+    });
+  }
+
+  void selectCard() {
+    setState(() {
+      selectedMoney = false;
+      selectedCard = true;
+      metodo = 'Cartão';
+    });
+  }
+
+  void selectChip(categoriaChip, selectedChipIndex) {
+    setState(() {
+      categoria = categoriaChip;
+      for (var element in selecteds) {
+        if (element.isSelect == true) {
+          element.isSelect = false;
+        }
+      }
+      selecteds[selectedChipIndex].isSelect =
+          !selecteds[selectedChipIndex].isSelect;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colors = Theme.of(context).colorScheme;
     return Scaffold(
         appBar: AppBar(
           title: const Text("Adicionar Despesa"),
@@ -86,6 +128,17 @@ class _AddDespesasState extends State<AddDespesas> {
                   });
             },
           ),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.done),
+              tooltip: 'Confirmar Despesa',
+              onPressed: () {
+                saveNewTask();
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Despesa Salva')));
+              },
+            ),
+          ],
         ),
         body: Center(
           child: Column(
@@ -105,9 +158,6 @@ class _AddDespesasState extends State<AddDespesas> {
                     labelStyle: TextStyle(
                       color: Color(0xFF6200EE),
                     ),
-                    suffixIcon: Icon(
-                      Icons.check_circle,
-                    ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFF6200EE)),
                     ),
@@ -124,13 +174,10 @@ class _AddDespesasState extends State<AddDespesas> {
                   keyboardType: TextInputType.text,
                   cursorColor: Theme.of(context).primaryColor,
                   decoration: const InputDecoration(
-                    icon: Icon(Icons.attach_money),
+                    icon: Icon(Icons.description),
                     labelText: 'Descricao',
                     labelStyle: TextStyle(
                       color: Color(0xFF6200EE),
-                    ),
-                    suffixIcon: Icon(
-                      Icons.check_circle,
                     ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFF6200EE)),
@@ -141,29 +188,217 @@ class _AddDespesasState extends State<AddDespesas> {
               const SizedBox(
                 height: 20,
               ),
-              TextField(
-                  focusNode: AlwaysDisabledFocusNode(),
-                  controller: _controllerDate,
-                  onTap: () {
-                    _selectDate(context);
-                  }),
-              /*
-              ElevatedButton(
-                onPressed: _selectDate,
-                child: const Text('Selecionar Vencimento'),
+              SizedBox(
+                width: 300,
+                child: TextField(
+                    focusNode: AlwaysDisabledFocusNode(),
+                    controller: _controllerDate,
+                    decoration: const InputDecoration(
+                      icon: Icon(Icons.date_range),
+                      labelText: 'Vencimento',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF6200EE),
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF6200EE)),
+                      ),
+                    ),
+                    onTap: () {
+                      _selectDate(context);
+                    }),
               ),
-              Text(
-                'Selected date: $_formattedDate',
-              ),*/
-              const SizedBox(
-                height: 20,
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 100,
+                width: 300,
+                child: Column(children: [
+                  const Text("Método de Pagamento:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (selectedCard == true && selectedMoney == false)
+                        SizedBox(
+                            child: Column(
+                          children: [
+                            IconButton(
+                              isSelected: selectedCard,
+                              icon: const Icon(Icons.credit_card_off_rounded),
+                              selectedIcon:
+                                  const Icon(Icons.credit_card_rounded),
+                              tooltip: 'Cartão de Crédito',
+                              onPressed: selectCard,
+                              style: IconButton.styleFrom(
+                                foregroundColor: colors.onPrimary,
+                                backgroundColor: colors.primary,
+                                disabledBackgroundColor:
+                                    colors.onSurface.withOpacity(0.12),
+                                hoverColor: colors.onPrimary.withOpacity(0.08),
+                                focusColor: colors.onPrimary.withOpacity(0.12),
+                                highlightColor:
+                                    colors.onPrimary.withOpacity(0.12),
+                              ),
+                            ),
+                            const Text("Cartão"),
+                          ],
+                        )),
+                      if (selectedCard == true && selectedMoney == false)
+                        SizedBox(
+                          child: Column(
+                            children: [
+                              IconButton(
+                                isSelected: selectedMoney,
+                                icon: const Icon(Icons.money_off),
+                                selectedIcon: const Icon(Icons.money_rounded),
+                                tooltip: 'Dinheiro',
+                                onPressed: selectMoney,
+                              ),
+                              const Text("Dinheiro"),
+                            ],
+                          ),
+                        ),
+                      if (selectedMoney == true && selectedCard == false)
+                        SizedBox(
+                            child: Column(children: [
+                          IconButton(
+                            isSelected: selectedCard,
+                            icon: const Icon(Icons.credit_card_off_rounded),
+                            selectedIcon: const Icon(Icons.credit_card_rounded),
+                            tooltip: 'Cartão de Crédito',
+                            onPressed: selectCard,
+                          ),
+                          const Text("Cartão"),
+                        ])),
+                      if (selectedMoney == true && selectedCard == false)
+                        SizedBox(
+                            child: Column(children: [
+                          IconButton(
+                            isSelected: selectedMoney,
+                            icon: const Icon(Icons.money_off),
+                            selectedIcon: const Icon(Icons.money_rounded),
+                            tooltip: 'Dinheiro',
+                            onPressed: selectMoney,
+                            style: IconButton.styleFrom(
+                              foregroundColor: colors.onPrimary,
+                              backgroundColor: colors.primary,
+                              disabledBackgroundColor:
+                                  colors.onSurface.withOpacity(0.12),
+                              hoverColor: colors.onPrimary.withOpacity(0.08),
+                              focusColor: colors.onPrimary.withOpacity(0.12),
+                              highlightColor:
+                                  colors.onPrimary.withOpacity(0.12),
+                            ),
+                          ),
+                          const Text("Dinheiro"),
+                        ])),
+                    ],
+                  )
+                ]),
+              ),
+              SizedBox(
+                height: 218,
+                width: 400,
+                child: Column(children: [
+                  const Text("Categoria:",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.deepPurple)),
+                  Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ChoiceChip(
+                              selected: selecteds[0].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Alimentação'),
+                              onSelected: (bool selected) {
+                                selectChip('Alimentação', 0);
+                              }),
+                          ChoiceChip(
+                              selected: selecteds[1].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Lazer'),
+                              onSelected: (bool selected) {
+                                selectChip('Lazer', 1);
+                              }),
+                          ChoiceChip(
+                              selected: selecteds[2].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Transporte'),
+                              onSelected: (bool selected) {
+                                selectChip('Transporte', 2);
+                              }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ChoiceChip(
+                              selected: selecteds[3].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Pet'),
+                              onSelected: (bool selected) {
+                                selectChip('Pet', 3);
+                              }),
+                          ChoiceChip(
+                              selected: selecteds[4].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Filhos'),
+                              onSelected: (bool selected) {
+                                selectChip('Filhos', 4);
+                              }),
+                          ChoiceChip(
+                              selected: selecteds[8].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Saúde'),
+                              onSelected: (bool selected) {
+                                selectChip('Saúde', 8);
+                              }),
+                          ChoiceChip(
+                              selected: selecteds[6].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Casa'),
+                              onSelected: (bool selected) {
+                                selectChip('Casa', 6);
+                              }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ChoiceChip(
+                              selected: selecteds[7].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Educação'),
+                              onSelected: (bool selected) {
+                                selectChip('Educação', 7);
+                              }),
+                          ChoiceChip(
+                              selected: selecteds[5].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Impostos'),
+                              onSelected: (bool selected) {
+                                selectChip('Impostos', 5);
+                              }),
+                          ChoiceChip(
+                              selected: selecteds[9].isSelect,
+                              selectedColor: colors.primary,
+                              label: const Text('Outros'),
+                              onSelected: (bool selected) {
+                                selectChip('Alimentação', 9);
+                              }),
+                        ],
+                      ),
+                    ],
+                  )
+                ]),
               ),
             ],
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: saveNewTask,
-          child: const Text("Salvar"),
         ));
   }
 

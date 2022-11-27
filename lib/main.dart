@@ -39,6 +39,7 @@ class _NavigationExampleState extends State<NavigationExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: NavigationBar(
+        height: 70,
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;

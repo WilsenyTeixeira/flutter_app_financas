@@ -9,7 +9,7 @@ class ToDoDataBase {
   // run this method if this is the 1st time ever opening this app
   void createInitialData() {
     toDoList = [
-      ["120", "wilseny", "2000-11-11", false],
+      ["120", "wilseny", "2000-11-11", false, "Alimentacao", "Cartão"],
     ];
   }
 
