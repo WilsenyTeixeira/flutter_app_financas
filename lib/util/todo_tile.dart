@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ToDoTile extends StatelessWidget {
-  final String taskValor;
+  final double taskValor;
   final String taskDesc;
   final String taskDate;
   final bool taskCompleted;
@@ -75,7 +75,7 @@ class ToDoTile extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          taskValor,
+                          taskValor.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             decoration: taskCompleted

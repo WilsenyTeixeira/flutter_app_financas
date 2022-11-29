@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../data/database.dart';
@@ -15,11 +17,12 @@ class _HomePageState extends State<HomePage> {
   final _myBox = Hive.box('mybox');
   ToDoDataBase db = ToDoDataBase();
   List dbFinal = [];
+  double _sum = 0.0;
 
   @override
   void initState() {
     // if this is the 1st time ever openin the app, then create default data
-    if (_myBox.get("TODOLIST") == null) {
+    if (_myBox.get("TODOLIST-1") == null) {
       db.createInitialData();
     } else {
       // there already exists data
@@ -37,6 +40,10 @@ class _HomePageState extends State<HomePage> {
         dbFinal.add(element);
       }
     }
+
+    dbFinal.forEach((element) {
+      _sum += element.first;
+    });
   }
 
   // text controller
@@ -62,25 +69,33 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        elevation: 0,
-      ),
-      body: ListView.builder(
-        itemCount: dbFinal.length,
-        itemBuilder: (context, index) {
-          return ToDoTile(
-            taskValor: dbFinal[index][0],
-            taskDesc: dbFinal[index][1],
-            taskDate: dbFinal[index][2],
-            taskCompleted: dbFinal[index][3],
-            taskCategoria: dbFinal[index][4],
-            taskMetodo: dbFinal[index][5],
-            payTask: (context) => payTask(index),
-            deleteFunction: (context) => deleteTask(index),
-          );
-        },
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('Home'),
+          elevation: 0,
+        ),
+        body: Column(
+          children: [
+            Text("Total: R\$ " + _sum.toString()),
+            SizedBox(
+              height: 500,
+              width: 400,
+              child: ListView.builder(
+                itemCount: dbFinal.length,
+                itemBuilder: (context, index) {
+                  return ToDoTile(
+                    taskValor: dbFinal[index][0],
+                    taskDesc: dbFinal[index][1],
+                    taskDate: dbFinal[index][2],
+                    taskCompleted: dbFinal[index][3],
+                    taskCategoria: dbFinal[index][4],
+                    taskMetodo: dbFinal[index][5],
+                    payTask: (context) => payTask(index),
+                    deleteFunction: (context) => deleteTask(index),
+                  );
+                },
+              ),
+            )
+          ],
+        ));
   }
 }

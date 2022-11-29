@@ -46,7 +46,7 @@ class _AddDespesasState extends State<AddDespesas> {
   @override
   void initState() {
     // if this is the 1st time ever openin the app, then create default data
-    if (_myBox.get("TODOLIST") == null) {
+    if (_myBox.get("TODOLIST-1") == null) {
       db.createInitialData();
     } else {
       // there already exists data
@@ -63,7 +63,9 @@ class _AddDespesasState extends State<AddDespesas> {
   void saveNewTask() {
     setState(() {
       db.toDoList.add([
-        _controllerValor.text,
+        double.parse(_controllerValor.text
+            .substring(0, _controllerValor.text.length - 7)
+            .replaceAll(",", ".")),
         _controllerDesc.text,
         _controllerDate.text,
         false,
