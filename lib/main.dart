@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'pages/home_page.dart';
 import 'pages/add_despesas.dart';
+import 'pages/despesas_pagas.dart';
 
 void main() async {
   // init the hive
@@ -53,23 +54,19 @@ class _NavigationExampleState extends State<NavigationExample> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.commute),
-            label: 'Commute',
-          ),
-          NavigationDestination(
             icon: Icon(Icons.add),
             label: 'Add',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.format_list_bulleted_outlined),
+            label: 'Despesas Pagas',
           ),
         ],
       ),
       body: <Widget>[
         const HomePage(),
-        Container(
-          color: Colors.green,
-          alignment: Alignment.center,
-          child: const Text('Page 2'),
-        ),
         const AddDespesas(),
+        const DespesasPagas(),
       ][currentPageIndex],
       /*floatingActionButton: FloatingActionButton(
         onPressed: () {

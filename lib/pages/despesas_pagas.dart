@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:app_financa/util/cards_despesas.dart';
 import '../data/database.dart';
-import '../util/cards_despesas.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class DespesasPagas extends StatefulWidget {
+  const DespesasPagas({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DespesasPagas> createState() => _DespesasPagasState();
 }
 
-class _HomePageState extends State<HomePage> {
-  // reference the hive box
+class _DespesasPagasState extends State<DespesasPagas> {
   final _myBox = Hive.box('mybox');
   DespesasDataBase db = DespesasDataBase();
   List dbFinal = [];
@@ -34,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   void atualizaDbFinal() {
     dbFinal.clear();
     for (var element in db.despesasList) {
-      if (element[3] == false) {
+      if (element[3] == true) {
         dbFinal.add(element);
       }
     }
@@ -49,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   // checkbox was tapped
   void payDespesa(int index) {
     setState(() {
-      db.despesasList[index][3] = true;
+      db.despesasList[index][3] = false;
     });
     db.updateDataBase();
     atualizaDbFinal();
@@ -68,7 +67,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Home'),
+          title: const Text('Despesas Pagas'),
           elevation: 0,
         ),
         body: Column(

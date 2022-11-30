@@ -20,7 +20,7 @@ class AddDespesas extends StatefulWidget {
 
 class _AddDespesasState extends State<AddDespesas> {
   final _myBox = Hive.box('mybox');
-  ToDoDataBase db = ToDoDataBase();
+  DespesasDataBase db = DespesasDataBase();
 
   String categoria = '';
   String metodo = 'Dinheiro';
@@ -46,7 +46,7 @@ class _AddDespesasState extends State<AddDespesas> {
   @override
   void initState() {
     // if this is the 1st time ever openin the app, then create default data
-    if (_myBox.get("TODOLIST-1") == null) {
+    if (_myBox.get("DB_DESPESAS") == null) {
       db.createInitialData();
     } else {
       // there already exists data
@@ -60,12 +60,13 @@ class _AddDespesasState extends State<AddDespesas> {
   final _controllerDesc = TextEditingController();
   final _controllerDate = TextEditingController();
 
-  void saveNewTask() {
+  void saveNewDespesa() {
     setState(() {
-      db.toDoList.add([
+      db.despesasList.add([
         double.parse(_controllerValor.text
             .substring(0, _controllerValor.text.length - 7)
-            .replaceAll(",", ".")),
+            .replaceAll(",", ".")
+            .replaceAll(" ", "")),
         _controllerDesc.text,
         _controllerDate.text,
         false,
@@ -128,17 +129,6 @@ class _AddDespesasState extends State<AddDespesas> {
                   });
             },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.done),
-              tooltip: 'Confirmar Despesa',
-              onPressed: () {
-                saveNewTask();
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Despesa Salva')));
-              },
-            ),
-          ],
         ),
         body: Center(
           child: Column(
@@ -166,7 +156,7 @@ class _AddDespesasState extends State<AddDespesas> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 5,
               ),
               SizedBox(
                 width: 300,
@@ -188,7 +178,7 @@ class _AddDespesasState extends State<AddDespesas> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 5,
               ),
               SizedBox(
                 width: 300,
@@ -210,7 +200,7 @@ class _AddDespesasState extends State<AddDespesas> {
                       _selectDate(context);
                     }),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 5),
               SizedBox(
                 height: 100,
                 width: 300,
@@ -301,7 +291,7 @@ class _AddDespesasState extends State<AddDespesas> {
                 ]),
               ),
               SizedBox(
-                height: 218,
+                height: 210,
                 width: 400,
                 child: Column(children: [
                   const Text("Categoria:",
@@ -310,7 +300,7 @@ class _AddDespesasState extends State<AddDespesas> {
                           color: Color.fromARGB(255, 66, 73, 64))),
                   Column(
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -400,6 +390,14 @@ class _AddDespesasState extends State<AddDespesas> {
                   )
                 ]),
               ),
+              ElevatedButton.icon(
+                  onPressed: () {
+                    saveNewDespesa();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Despesa Salva')));
+                  },
+                  icon: const Icon(Icons.done),
+                  label: const Text("Confirmar")),
             ],
           ),
         ));
@@ -409,7 +407,7 @@ class _AddDespesasState extends State<AddDespesas> {
     DateTime? newSelectedDate = await showDatePicker(
         context: context,
         initialDate: _selectedDate,
-        firstDate: DateTime(2000),
+        firstDate: DateTime(2020),
         lastDate: DateTime(2040),
         builder: (BuildContext context, Widget? child) {
           return Theme(

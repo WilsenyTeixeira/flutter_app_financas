@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class ToDoTile extends StatelessWidget {
-  final double taskValor;
-  final String taskDesc;
-  final String taskDate;
-  final bool taskCompleted;
-  final String taskCategoria;
-  final String taskMetodo;
-  Function(BuildContext)? payTask;
+class Cards_Despesas extends StatelessWidget {
+  final double despesaValor;
+  final String despesaDesc;
+  final String despesaDate;
+  final bool despesaEmAberto;
+  final String despesaCategoria;
+  final String despesaMetodo;
+  Function(BuildContext)? payDespesa;
   Function(BuildContext)? deleteFunction;
 
-  ToDoTile({
+  Cards_Despesas({
     super.key,
-    required this.taskValor,
-    required this.taskDesc,
-    required this.taskDate,
-    required this.taskCompleted,
-    required this.taskCategoria,
-    required this.taskMetodo,
-    required this.payTask,
+    required this.despesaValor,
+    required this.despesaDesc,
+    required this.despesaDate,
+    required this.despesaEmAberto,
+    required this.despesaCategoria,
+    required this.despesaMetodo,
+    required this.payDespesa,
     required this.deleteFunction,
   });
 
@@ -32,12 +32,13 @@ class ToDoTile extends StatelessWidget {
         startActionPane: ActionPane(
           motion: const StretchMotion(),
           children: [
-            SlidableAction(
-              onPressed: payTask,
-              icon: Icons.done,
-              backgroundColor: colors.tertiaryContainer,
-              borderRadius: BorderRadius.circular(12),
-            ),
+            if (!despesaEmAberto)
+              SlidableAction(
+                onPressed: payDespesa,
+                icon: Icons.done,
+                backgroundColor: colors.tertiaryContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
           ],
         ),
         endActionPane: ActionPane(
@@ -69,16 +70,16 @@ class ToDoTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          taskDate,
+                          despesaDate,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          taskValor.toString(),
+                          despesaValor.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            decoration: taskCompleted
+                            decoration: despesaEmAberto
                                 ? TextDecoration.lineThrough
                                 : TextDecoration.none,
                           ),
@@ -101,7 +102,7 @@ class ToDoTile extends StatelessWidget {
                           SizedBox(
                             width: 100,
                             child: Text(
-                              taskDesc,
+                              despesaDesc,
                               style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,
@@ -119,10 +120,10 @@ class ToDoTile extends StatelessWidget {
                         children: [
                           Chip(
                             labelStyle: const TextStyle(fontSize: 12),
-                            label: Text(taskCategoria),
+                            label: Text(despesaCategoria),
                             backgroundColor: colors.surface,
                           ),
-                          if (taskMetodo == "Cartão")
+                          if (despesaMetodo == "Cartão")
                             Chip(
                               labelStyle: const TextStyle(fontSize: 12),
                               label: const Text("Cartão"),
@@ -134,7 +135,7 @@ class ToDoTile extends StatelessWidget {
                               label: const Text("Dinheiro"),
                               backgroundColor: colors.surface,
                             ),
-                          if (taskCompleted == true)
+                          if (despesaEmAberto == true)
                             Chip(
                               labelStyle: const TextStyle(fontSize: 12),
                               label: const Text("Pago"),
